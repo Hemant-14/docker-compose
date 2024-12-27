@@ -1,0 +1,16 @@
+---
+version: '3.8'
+services:
+  db1:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: intelliqit
+
+  mywordp:
+    image: wordpress
+    ports:
+      - 8888:80
+    links:
+      - db1:mydb
+...
+

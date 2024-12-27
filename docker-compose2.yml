@@ -1,0 +1,19 @@
+---
+version: '3.8'
+services:
+  db1:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: intelliqit
+  apache:
+    image: httpd
+    ports:
+      - 1111:80
+    links:
+      - db1:mysql
+  php:
+    image: php:7.2-apache
+    links:
+      - db1:mysql
+      - apache:httpd
+...
