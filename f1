@@ -1,0 +1,106 @@
+version: "3.8"
+services:
+  app2:
+    image: adminer
+    environment:
+      - SERVICE_URL=http://54.227.126.232:9090
+    networks:
+      - custom-network
+
+networks:
+  custom-network:
+    driver: bridge
+
+---
+services:
+  myjenkins:
+    image: jenkins/jenkins
+    ports:
+      - 5050:8080
+
+  qaserver:
+    image: tomee
+    ports:
+      - 6060:8080
+    links:
+      - myjenkins:jenkins
+  prodserver:
+    image: tomee
+    ports:
+      - 7070:8080
+    links:
+      - myjenkins:jenkins
+...
+
+---
+version: '3.8'
+services:
+  db1:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: intelliqit
+  apache:
+    image: httpd
+    ports:
+      - 1111:80
+    links:
+      - db1:mysql
+  php:
+    image: php:7.2-apache
+    links:
+      - db1:mysql
+      - apache:httpd
+...
+---
+version: '3.8'
+services:
+  db1:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD:  intelliqit
+      POSTGRES_USER:  myuser
+      POSTGRES_DB: mydb
+  mydminer:
+    image: adminer
+    ports:
+      - 9999:8080
+    links:
+      - db1:postgres
+...
+
+services:
+  myjenkins:
+    image: jenkins/jenkins
+    ports:
+      - 5050:8080
+    network: 
+      - net2
+  mytom1:
+    image: tomee
+    ports:
+      - 6060:8080
+    network:
+      - net1
+  mytom2:
+    image: tomee
+    ports:
+      - 7070:8080
+network:
+  net1: {}
+  net2: {}
+        
+...
+
+
+  
+FROM ubuntu
+
+RUN apt-get update
+RUN apt-get install -y openjdk-17-jdk
+WORKDIR /root
+
+ADD https://get.jenkins.io/war-stable/2.479.2/jenkins.war .
+# /root ---> (this /root path will not be neccasry if WORKDIR is used) (it will be replaced with .)
+ 
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","jenkins.war"]

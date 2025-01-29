@@ -1,0 +1,25 @@
+services:
+  myjenkins:
+    image: jenkins/jenkins
+    ports:
+      - 5050:8080
+    network: 
+      - net2
+  mytom1:
+    image: tomee
+    ports:
+      - 6060:8080
+    network:
+      - net1
+  mytom2:
+    image: tomee
+    ports:
+      - 7070:8080
+network:
+  net1: {}
+  net2: {}
+        
+...
+
+
+  

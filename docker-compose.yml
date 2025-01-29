@@ -1,16 +1,13 @@
----
-version: '3.8'
+version: "3.8"
 services:
-  db1:
-    image: mysql
+  app2:
+    image: adminer
     environment:
-      MYSQL_ROOT_PASSWORD: intelliqit
+      - SERVICE_URL=http://54.227.126.232:9090
+    networks:
+      - custom-network
 
-  mywordp:
-    image: wordpress
-    ports:
-      - 8888:80
-    links:
-      - db1:mydb
-...
+networks:
+  custom-network:
+    driver: bridge
 
